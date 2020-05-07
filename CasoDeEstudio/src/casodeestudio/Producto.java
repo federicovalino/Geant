@@ -28,6 +28,10 @@ public class Producto implements IProducto {
         return codigo;
     }
 
+    public String getCodigo(){
+        return codigo;
+    }
+
     /**
      * Retorna el precio unitario del Producto.
      *

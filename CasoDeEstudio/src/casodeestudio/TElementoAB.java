@@ -1,9 +1,8 @@
 import java.util.LinkedList;
 
-public class TElementoAB<T> implements IElementoAB<T> {
+public class TElementoAB<T> implements ITElementoAB<T> {
 
     private int nivel;
-    int conteo;
     Comparable etiqueta;
     T dato;
     TElementoAB<T> hijoIzquierdo;
@@ -14,7 +13,6 @@ public class TElementoAB<T> implements IElementoAB<T> {
         this.dato = datoIngresado;
         this.hijoIzquierdo = null;
         this.hijoDerecho = null;
-        this.conteo = 0;
     }
 
     public TElementoAB(T datoIngresado, Comparable clave, TElementoAB<T> hijoI, TElementoAB<T> hijoD) {
@@ -22,7 +20,7 @@ public class TElementoAB<T> implements IElementoAB<T> {
         this.dato = datoIngresado;
         this.hijoIzquierdo = hijoI;
         this.hijoDerecho = hijoD;
-        this.conteo = 0;
+
     }
 
     public Comparable getEtiqueta() {
@@ -97,34 +95,6 @@ public class TElementoAB<T> implements IElementoAB<T> {
         }
     }
 
-    public TElementoAB<T> buscar(Comparable unaEtiqueta, int contador) {
-        this.conteo = 1 + contador;
-        if (unaEtiqueta.compareTo(this.etiqueta) == 0) {
-            return this;
-        } else {
-            if (unaEtiqueta.compareTo(this.etiqueta) < 0) {
-                if (this.hijoIzquierdo != null) {
-                    this.conteo = this.hijoIzquierdo.buscar(unaEtiqueta, this.conteo).conteo;
-                    return this.hijoIzquierdo.buscar(unaEtiqueta);
-                } else {
-                    return null;
-                }
-            } else {
-                if (unaEtiqueta.compareTo(this.etiqueta) > 0) {
-
-                    if (this.hijoDerecho != null) {
-                        this.conteo = this.hijoDerecho.buscar(unaEtiqueta, this.conteo).conteo;
-                        return this.hijoDerecho.buscar(unaEtiqueta, this.conteo);
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            }
-        }
-    }
-
     /**
      * Inserta un elemento dentro del arbol.
      *
@@ -151,29 +121,6 @@ public class TElementoAB<T> implements IElementoAB<T> {
         }
     }
 
-    public int insertarConConteo(TElementoAB<T> elemento) {
-        int valor = this.etiqueta.compareTo(elemento.getEtiqueta());
-        if (elemento.etiqueta.equals(this.etiqueta)) {
-            return 0;
-        } else if (this.etiqueta.compareTo(elemento.getEtiqueta()) > 0) {
-            if (this.hijoIzquierdo == null) {
-                this.hijoIzquierdo = elemento;
-                return 0;
-            } else {
-                int alturaRecibida = this.hijoIzquierdo.insertarConConteo(elemento);
-                return alturaRecibida + 1;
-            }
-        } else {
-            if (this.hijoDerecho == null) {
-                this.hijoDerecho = elemento;
-                return 0;
-            } else {
-                int alturaRecibida = this.hijoDerecho.insertarConConteo(elemento);
-                return alturaRecibida + 1;
-            }
-        }
-    }
-
     /**
      * Imprime en preorden el arbol separado por guiones.
      *
@@ -181,7 +128,7 @@ public class TElementoAB<T> implements IElementoAB<T> {
      */
     public String preOrden() {
         String temp = "";
-        temp = temp + " " + this.etiqueta;
+        temp = temp + "," + this.etiqueta;
         if (hijoIzquierdo != null) {
             temp = hijoIzquierdo.preOrden();
         }
@@ -199,11 +146,11 @@ public class TElementoAB<T> implements IElementoAB<T> {
     public String inOrden() {
         String temp = "";
         if (hijoIzquierdo != null) {
-            temp = hijoIzquierdo.inOrden() + " ";
+            temp = hijoIzquierdo.inOrden() + ",";
         }
         temp += this.etiqueta;
         if (hijoDerecho != null) {
-            temp = temp + " " + hijoDerecho.inOrden();
+            temp = temp + "," + hijoDerecho.inOrden();
         }
         return temp;
     }
@@ -221,7 +168,7 @@ public class TElementoAB<T> implements IElementoAB<T> {
         if (hijoDerecho != null) {
             temp = temp + hijoDerecho.postOrden();
         }
-        temp = temp + " " + etiqueta;
+        temp = temp + "," + etiqueta;
         return temp;
     }
 

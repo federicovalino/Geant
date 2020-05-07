@@ -7,6 +7,8 @@ public interface IProducto{
      */
     public Comparable getEtiqueta();
 
+    public String getCodigo();
+
     /**
      * Retorna el precio unitario del Producto.
      *

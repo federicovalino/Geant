@@ -6,20 +6,17 @@ public interface IAlmacen {
 
     public String getTelefono();
 
-    public int getGondolas();
-
     public void setTelefono(String telefono);
 
     public String getNombre();
 
-    public Lista<Producto> getListaProductos();
-
+    public ArbolBinarioSucursal<Producto> getArbolProductos();
     /**
      * Incorporar un nuevo producto al supermercado.
      *
      * @param unProducto
      */
-    public void insertarProducto(Producto unProducto);
+    public boolean insertarProducto(Producto unProducto);
 
     /**
      * Eliminar productos que ya no se venden (por no ser comercializados m�s).
@@ -34,16 +31,21 @@ public interface IAlmacen {
      *
      * @return
      */
-    public String imprimirProductos();
+    public String imprimirProductosInOrden();
 
     /**
-     * Dado un separador ej.:",", ";", imprime los productos separados por tal
-     * caracter
+     * Imprime la lista de productos
      *
-     * @param separador
      * @return
      */
-    public String imprimirSeparador(String separador);
+    public String imprimirProductosPostOrden();
+
+    /**
+     * Imprime la lista de productos
+     *
+     * @return
+     */
+    public String imprimirProductosPreOrden();
 
     /**
      * Agregar stock a un producto existente.
@@ -52,7 +54,7 @@ public interface IAlmacen {
      * @param cantidad
      * @return
      */
-    public Boolean agregarStock(Comparable clave, Integer cantidad);
+    public boolean agregarStock(Comparable clave, Integer cantidad);
 
     /**
      * Simular la venta de un producto (reducir el stock de un producto
@@ -62,7 +64,7 @@ public interface IAlmacen {
      * @param cantidad
      * @return
      */
-    public Integer restarStock(Comparable clave, Integer cantidad);
+    public boolean restarStock(Comparable clave, Integer cantidad);
 
     /**
      * Dado un código de producto, indicar las existencias del mismo en el
