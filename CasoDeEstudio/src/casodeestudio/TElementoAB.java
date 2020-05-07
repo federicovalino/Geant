@@ -1,5 +1,3 @@
-import java.util.LinkedList;
-
 public class TElementoAB<T> implements ITElementoAB<T> {
 
     private int nivel;
@@ -307,9 +305,10 @@ public class TElementoAB<T> implements ITElementoAB<T> {
         }
     }
 
-    public void obtenerNodosNivel(int nivel, LinkedList<TElementoAB<T>> lista) {
+    public void obtenerNodosNivel(int nivel, Lista<T> lista) {
         if (this.nivel==nivel) {
-            lista.addFirst(this);
+            Nodo<T> elementoAInsertar = new Nodo<T>(this.getEtiqueta(),this.getDatos());
+            lista.insertarPrimero(elementoAInsertar);
         }
         if (hijoIzquierdo != null) {
             this.hijoIzquierdo.obtenerNodosNivel(nivel,lista);
@@ -319,9 +318,10 @@ public class TElementoAB<T> implements ITElementoAB<T> {
         }
     }
 
-    public void obtenerHojas(LinkedList<TElementoAB<T>> lista) {
+    public void obtenerHojas(Lista<T> lista) {
         if (this.hijoIzquierdo == null && hijoDerecho == null) {
-            lista.addFirst(this);
+            Nodo<T> elementoAInsertar = new Nodo<T>(this.getEtiqueta(),this.getDatos());
+            lista.insertarPrimero(elementoAInsertar);
         }
         if (hijoIzquierdo != null) {
             this.hijoIzquierdo.obtenerHojas(lista);

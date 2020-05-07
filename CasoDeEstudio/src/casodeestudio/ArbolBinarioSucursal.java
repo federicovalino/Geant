@@ -1,4 +1,4 @@
-import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class ArbolBinarioSucursal<T> implements IArbolBB<T> {
 
@@ -153,25 +153,37 @@ public class ArbolBinarioSucursal<T> implements IArbolBB<T> {
         this.raiz.cargarNivel(0);
     }
 
-    public LinkedList<TElementoAB<T>> obtenerNodosNivel(int nivel) {
+    public Lista<T> obtenerNodosNivel(int nivel) {
         this.raiz.cargarNivel(0);
-        LinkedList<TElementoAB<T>> listaNodosNivel = new LinkedList<TElementoAB<T>>();
+        Lista<T> listaNodosNivel = new Lista<T>();
         this.raiz.obtenerNodosNivel(nivel, listaNodosNivel);
         return listaNodosNivel;
     }
 
-    public LinkedList<TElementoAB<T>> obtenerHojas() {
+    public Lista<T> obtenerHojas() {
         this.raiz.cargarNivel(0);
-        LinkedList<TElementoAB<T>> listaHojas = new LinkedList<TElementoAB<T>>();
+        Lista<TElementoAB<T>> listaHojas = new Lista<TElementoAB<T>>();
         this.raiz.obtenerHojas(listaHojas);
         return listaHojas;
     }
 
     public String hojasConSuNivel() {
-        LinkedList<TElementoAB<T>> lista = this.obtenerHojas();
+        Lista<T> lista = this.obtenerHojas();
         String cadena = "";
-        for (int i=0;i<lista.size();i++) {
-            cadena = cadena + lista.get(i).getEtiqueta() + "," + lista.get(i).getNivel() + "\n";
+        Nodo<T> primerNodo = lista.getPrimero();
+        int i = 0;
+        while (primerNodo != null) {
+            i++;
+            if (primerNodo.getSiguiente()!=null) {
+                if(i==1) {
+                    cadena = primerNodo.getEtiqueta();
+                } else {
+                    cadena = cadena + "," + primerNodo.getEtiqueta();
+                }
+            } else {
+                cadena = cadena + "," + primerNodo.getEtiqueta();
+            }
+
         }
         return cadena;
     }
