@@ -1,3 +1,5 @@
+
+
 public class TElementoAB<T> implements ITElementoAB<T> {
 
     private int nivel;
@@ -96,26 +98,28 @@ public class TElementoAB<T> implements ITElementoAB<T> {
     /**
      * Inserta un elemento dentro del arbol.
      *
-     * @param elemento Elemento a insertar.
+     * @param unElemento Elemento a insertar.
      * @return Exito de la operaci�n.
      */
-    public boolean insertar(TElementoAB<T> elemento) {
-        if (elemento.etiqueta.equals(this.etiqueta)) {
-            return false;
-        } else if (elemento.etiqueta.compareTo(this.etiqueta) < 0) {
-            if (this.hijoIzquierdo == null) {
-                this.hijoIzquierdo = elemento;
-                return true;
+    @Override
+    public boolean insertar(TElementoAB<T> unElemento) {
+        if (unElemento.getEtiqueta().compareTo(this.etiqueta) < 0) {
+            if (hijoIzquierdo != null) {
+                return hijoIzquierdo.insertar(unElemento);
             } else {
-                return this.hijoIzquierdo.insertar(elemento);
+                hijoIzquierdo = unElemento;
+                return true;
+            }
+        } else if (unElemento.getEtiqueta().compareTo(this.etiqueta) > 0) {
+            if (hijoDerecho != null) {
+                return hijoDerecho.insertar(unElemento);
+            } else {
+                hijoDerecho = unElemento;
+                return true;
             }
         } else {
-            if (this.hijoDerecho == null) {
-                this.hijoDerecho = elemento;
-                return true;
-            } else {
-                return this.hijoDerecho.insertar(elemento);
-            }
+            // ya existe un elemento con la misma etiqueta.-
+            return false;
         }
     }
 
@@ -151,6 +155,18 @@ public class TElementoAB<T> implements ITElementoAB<T> {
             temp = temp + "," + hijoDerecho.inOrden();
         }
         return temp;
+    }
+
+    public void inOrden(Lista<T> unaLista) {
+        Nodo<T> nodoLista = null;
+        if (hijoIzquierdo != null) {
+            this.hijoIzquierdo.inOrden(unaLista);
+        }
+        nodoLista = new Nodo<T>(this.getEtiqueta(),this.getDatos());
+        unaLista.insertar(nodoLista);
+        if (hijoDerecho != null) {
+            this.hijoDerecho.inOrden(unaLista);
+        }
     }
 
     /**

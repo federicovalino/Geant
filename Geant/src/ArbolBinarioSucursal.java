@@ -1,4 +1,3 @@
-import java.util.ListIterator;
 
 public class ArbolBinarioSucursal<T> implements IArbolBB<T> {
 
@@ -51,6 +50,10 @@ public class ArbolBinarioSucursal<T> implements IArbolBB<T> {
         return "";
     }
 
+    public boolean esVacio() {
+        return this.raiz==null;
+    }
+
     /**
      * Imprime en InOrden los elementos del árbol, separados por guiones.
      *
@@ -61,6 +64,14 @@ public class ArbolBinarioSucursal<T> implements IArbolBB<T> {
             return raiz.inOrden();
         }
         return "";
+    }
+
+    public Lista <T> inorden() {
+        Lista <T> listaInOrden = new Lista<T>();
+        if (!esVacio()) {
+            raiz.inOrden(listaInOrden);
+        }
+        return listaInOrden;
     }
 
     /**
@@ -84,8 +95,12 @@ public class ArbolBinarioSucursal<T> implements IArbolBB<T> {
     }
 
     public int cuentaNodos() {
-        int cantidad = (this.raiz).cantidadDeNodos();
-        return cantidad;
+        if (this.raiz==null){
+            return -1;
+        } else {
+            int cantidad = (this.raiz).cantidadDeNodos();
+            return cantidad;
+        }
     }
 
     public int obtenerAltura() {
@@ -162,7 +177,7 @@ public class ArbolBinarioSucursal<T> implements IArbolBB<T> {
 
     public Lista<T> obtenerHojas() {
         this.raiz.cargarNivel(0);
-        Lista<TElementoAB<T>> listaHojas = new Lista<TElementoAB<T>>();
+        Lista<T> listaHojas = new Lista<T>();
         this.raiz.obtenerHojas(listaHojas);
         return listaHojas;
     }
@@ -176,14 +191,11 @@ public class ArbolBinarioSucursal<T> implements IArbolBB<T> {
             i++;
             if (primerNodo.getSiguiente()!=null) {
                 if(i==1) {
-                    cadena = primerNodo.getEtiqueta();
+                    cadena = String.valueOf(primerNodo.getEtiqueta());
                 } else {
                     cadena = cadena + "," + primerNodo.getEtiqueta();
                 }
-            } else {
-                cadena = cadena + "," + primerNodo.getEtiqueta();
             }
-
         }
         return cadena;
     }
