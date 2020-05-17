@@ -1,8 +1,8 @@
 
 public class Producto implements IProducto {
 
-    private int precio;
-    private String codigo;
+    private Double precio;
+    private Comparable codigo;
     private String nombre;
     private int stock;
 
@@ -13,7 +13,7 @@ public class Producto implements IProducto {
      * @param nombre
      * @param stock
     */
-    public Producto(int precio, String codigo, String nombre, int stock){
+    public Producto(Double precio, Comparable codigo, String nombre, int stock){
         this.precio = precio;
         this.codigo = codigo;
         this.nombre = nombre;
@@ -29,16 +29,12 @@ public class Producto implements IProducto {
         return codigo;
     }
 
-    public String getCodigo(){
-        return codigo;
-    }
-
     /**
      * Retorna el precio unitario del Producto.
      *
      * @return precio del Producto.
      */
-    public Integer getPrecio(){
+    public Double getPrecio(){
         return precio;
     }
 
@@ -46,7 +42,7 @@ public class Producto implements IProducto {
      * Método que permite modificar el precio del producto
      *
     */
-    public void setPrecio(Integer precio){
+    public void setPrecio(Double precio){
         this.precio = precio;
     }
 
@@ -93,4 +89,5 @@ public class Producto implements IProducto {
         String texto = this.codigo + ", " + this.nombre + ", " + this.precio + ", " + this.stock;
         return texto;
     }
+
 }

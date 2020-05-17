@@ -1,4 +1,6 @@
 
+import java.util.LinkedList;
+
 public interface IArbolBB<T> {
 
     /**
@@ -6,13 +8,15 @@ public interface IArbolBB<T> {
      * clave indicada en "unElemento", retorna falso.
      *
      * @param unElemento Elemento a insertar
-     * @return Exito de la operacián
+     * @return Exito de la operaci�n
      */
 
     public boolean insertar(TElementoAB<T> unElemento);
 
+ 
+
     /**
-     * Busca un elemento dentro del árbol.
+     * Busca un elemento dentro del �rbol.
      *
      *
      * @param unaEtiqueta Etiqueta identificadora del elemento a buscar.
@@ -21,35 +25,47 @@ public interface IArbolBB<T> {
      */
     public TElementoAB<T> buscar(Comparable unaEtiqueta);
 
+   
     /**
-     * Imprime en PreOrden los elementos del árbol, separados por guiones.
-     *
-     * @return String conteniendo el preorden separado por guiones.
-     */
-    public String preOrden();
-
-    /**
-     * Imprime en InOrden los elementos del árbol, separados por guiones.
+     * Imprime en InOrden los elementos del �rbol, separados por guiones.
      *
      * @return String conteniendo el preorden separado por guiones.
      */
     public String inOrden();
-
+    
     /**
-     * Imprime en PostOrden los elementos del árbol, separados por guiones.
      *
-     * @return String conteniendo el preorden separado por guiones.
+     * 
+     * @return una Lista con los elementos del recorrido.
+     * 
      */
-    public String postOrden();
+    public Lista<T> inorden( );
 
-
-       /**
-     * Elimina un elemento dada una etiqueta.
-     * @param unaEtiqueta
-     */
-    public void eliminar(Comparable unaEtiqueta);
-
-
-
+   /**
+	 * Retorna la altura del arbol.
+	 * @return Altura del arbol.
+	 */
+	public int obtenerAltura();
+	
+	/**
+	 * Retorna el tama�o del arbol.
+	 * @return Tama�o del arbol.
+	 */
+	public int obtenerTamanio();
+	
+	/**
+	 * Retorna el nivel del arbol a partir de la etiqueta indicada
+	 * @param unaEtiqueta
+	 * @return Nivel
+	 */
+	public int obtenerNivel(Comparable unaEtiqueta);
+	
+	/**
+	 * Retorna la cantidad de hojas del arbol.
+	 * @return Cantidad de hojas del arbol.
+	 */
+	public int obtenerCantidadHojas();
+	
+	
 }
 

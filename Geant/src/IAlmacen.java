@@ -11,13 +11,35 @@ public interface IAlmacen {
 
     public String getNombre();
 
-    public ArbolBinarioSucursal<Producto> getArbolProductos();
+    public String getBarrio();
+
+    public void setBarrio(String barrio);
+
+    public String getCiudad();
+
+    public void setCiudad (String ciudad);
+
+    public String getId();
+
+    public void setId (String id);
+
+    public String getDepartamento();
+
+    public void setDepartamento(String departamento);
+
+    public TArbolBB<IProducto> getArbolProductos();
     /**
      * Incorporar un nuevo producto al supermercado.
      *
      * @param unProducto
      */
-    public boolean insertarProducto(Producto unProducto);
+
+    /**
+     * Incorporar un nuevo producto al supermercado.
+     *
+     * @param unProducto
+     */
+    public void insertarProducto(IProducto unProducto);
 
     /**
      * Eliminar productos que ya no se venden (por no ser comercializados m�s).
@@ -25,28 +47,15 @@ public interface IAlmacen {
      * @param clave
      * @return
      */
-    public boolean eliminar(Comparable clave);
+    public boolean eliminarProducto(Comparable clave);
 
     /**
      * Imprime la lista de productos
      *
      * @return
      */
-    public String imprimirProductosInOrden();
+    public String imprimirProductos();
 
-    /**
-     * Imprime la lista de productos
-     *
-     * @return
-     */
-    public String imprimirProductosPostOrden();
-
-    /**
-     * Imprime la lista de productos
-     *
-     * @return
-     */
-    public String imprimirProductosPreOrden();
 
     /**
      * Agregar stock a un producto existente.
@@ -65,7 +74,8 @@ public interface IAlmacen {
      * @param cantidad
      * @return
      */
-    public boolean restarStock(Comparable clave, Integer cantidad);
+    public boolean venta(Comparable clave, Integer cantidad);
+
 
     /**
      * Dado un código de producto, indicar las existencias del mismo en el
@@ -81,7 +91,7 @@ public interface IAlmacen {
      * adem�s su stock. Imprime por consola la lista de todos los productos
      * registrados y su stock actual.
      */
-    public void listarOrdenadoPorNombre();
+    //public void listarOrdenadoPorNombre();
 
     /**
      * Busca un producto por su descripci�n.
@@ -89,7 +99,7 @@ public interface IAlmacen {
      * @param descripcion
      * @return
      */
-    public Producto buscarPorDescripcion(String descripcion);
+    //public IProducto buscarPorDescripcion(String descripcion);
 
     /**
      * Retorna el tama�o del almacen: cantidad de productos. No es lo mismo que

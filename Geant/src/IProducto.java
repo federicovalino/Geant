@@ -1,5 +1,5 @@
 
-public interface IProducto{
+public interface IProducto {
 
     /**
      * Retorna el codigo del Producto.
@@ -8,16 +8,14 @@ public interface IProducto{
      */
     public Comparable getEtiqueta();
 
-    public String getCodigo();
-
     /**
      * Retorna el precio unitario del Producto.
      *
      * @return precio del Producto.
      */
-    public Integer getPrecio();
+    public Double getPrecio();
 
-    public void setPrecio(Integer precio);
+    public void setPrecio(Double precio);
 
     /**
      * Retorna el stock del Producto.

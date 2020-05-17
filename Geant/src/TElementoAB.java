@@ -1,120 +1,49 @@
+public class TElementoAB<T> implements IElementoAB<T> {
 
-
-public class TElementoAB<T> implements ITElementoAB<T> {
-
+    private Comparable etiqueta;
+    private TElementoAB<T> hijoIzq;
+    private TElementoAB<T> hijoDer;
+    private T datos;
     private int nivel;
-    Comparable etiqueta;
-    T dato;
-    TElementoAB<T> hijoIzquierdo;
-    TElementoAB<T> hijoDerecho;
-
-    public TElementoAB(T datoIngresado, Comparable clave) {
-        this.etiqueta = clave;
-        this.dato = datoIngresado;
-        this.hijoIzquierdo = null;
-        this.hijoDerecho = null;
-    }
-
-    public TElementoAB(T datoIngresado, Comparable clave, TElementoAB<T> hijoI, TElementoAB<T> hijoD) {
-        this.etiqueta = clave;
-        this.dato = datoIngresado;
-        this.hijoIzquierdo = hijoI;
-        this.hijoDerecho = hijoD;
-
-    }
-
-    public Comparable getEtiqueta() {
-        return this.etiqueta;
-    }
 
     /**
-     * Obtiene el hijo izquierdo del nodo.
-     *
-     * @return Hijo Izquierdo del nodo.
+     * @param unaEtiqueta
+     * @param unosDatos
      */
+    @SuppressWarnings("unchecked")
+    public TElementoAB(Comparable unaEtiqueta, T unosDatos) {
+        etiqueta = unaEtiqueta;
+        datos = unosDatos;
+        nivel = 0;
+    }
+
     public TElementoAB<T> getHijoIzq() {
-        return this.hijoIzquierdo;
+        return hijoIzq;
     }
 
-    /**
-     * Obtiene el hijo derecho del nodo.
-     *
-     * @return Hijo derecho del nodo.
-     */
     public TElementoAB<T> getHijoDer() {
-        return this.hijoDerecho;
+        return hijoDer;
     }
 
     /**
-     * Asigna el hijo izquierdo del nodo.
-     *
-     * @return Elemento a ser asignado como hijo izquierdo.
+     * @param unElemento
+     * @return
      */
-    public void setHijoIzq(TElementoAB<T> elemento) {
-        this.hijoIzquierdo = elemento;
-    }
-
-    /**
-     * Asigna el hijo derecho del nodo.
-     *
-     * @return Elemento a ser asignado como hijo derecho.
-     */
-    public void setHijoDer(TElementoAB<T> elemento) {
-
-        this.hijoDerecho = elemento;
-
-    }
-
-    /**
-     * Busca un elemento dentro del arbol con la etiqueta indicada.
-     *
-     * @param unaEtiqueta del nodo a buscar
-     * @return Elemento encontrado. En caso de no encontrarlo, retorna nulo.
-     */
-    public TElementoAB<T> buscar(Comparable unaEtiqueta) {
-        if (unaEtiqueta.compareTo(this.etiqueta) == 0) {
-            return this;
-        } else {
-            if (unaEtiqueta.compareTo(this.etiqueta) < 0) {
-                if (this.hijoIzquierdo != null) {
-                    return this.hijoIzquierdo.buscar(unaEtiqueta);
-                } else {
-                    return null;
-                }
-            } else {
-                if (unaEtiqueta.compareTo(this.etiqueta) > 0) {
-                    if (this.hijoDerecho != null) {
-                        return hijoDerecho.buscar(unaEtiqueta);
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            }
-        }
-    }
-
-    /**
-     * Inserta un elemento dentro del arbol.
-     *
-     * @param unElemento Elemento a insertar.
-     * @return Exito de la operaci�n.
-     */
+    @SuppressWarnings("unchecked")
     @Override
     public boolean insertar(TElementoAB<T> unElemento) {
-        if (unElemento.getEtiqueta().compareTo(this.etiqueta) < 0) {
-            if (hijoIzquierdo != null) {
-                return hijoIzquierdo.insertar(unElemento);
+        if (unElemento.getEtiqueta().compareTo(etiqueta) < 0) {
+            if (hijoIzq != null) {
+                return getHijoIzq().insertar(unElemento);
             } else {
-                hijoIzquierdo = unElemento;
+                hijoIzq = unElemento;
                 return true;
             }
-        } else if (unElemento.getEtiqueta().compareTo(this.etiqueta) > 0) {
-            if (hijoDerecho != null) {
-                return hijoDerecho.insertar(unElemento);
+        } else if (unElemento.getEtiqueta().compareTo(etiqueta) > 0) {
+            if (hijoDer != null) {
+                return getHijoDer().insertar(unElemento);
             } else {
-                hijoDerecho = unElemento;
+                hijoDer = unElemento;
                 return true;
             }
         } else {
@@ -124,49 +53,42 @@ public class TElementoAB<T> implements ITElementoAB<T> {
     }
 
     /**
+     * @param unaEtiqueta
+     * @return
+     */
+    @Override
+    public TElementoAB<T> buscar(Comparable unaEtiqueta) {
+
+        if (unaEtiqueta.equals(etiqueta)) {
+            return this;
+        } else if (unaEtiqueta.compareTo(etiqueta) < 0) {
+            if (hijoIzq != null) {
+                return getHijoIzq().buscar(unaEtiqueta);
+            } else {
+                return null;
+            }
+        } else if (hijoDer != null) {
+            return getHijoDer().buscar(unaEtiqueta);
+        } else {
+            return null;
+        }
+    }
+
+        /**
      * Imprime en preorden el arbol separado por guiones.
      *
      * @return String conteniendo el PreOrden
      */
     public String preOrden() {
         String temp = "";
-        temp = temp + "," + this.etiqueta;
-        if (hijoIzquierdo != null) {
-            temp = hijoIzquierdo.preOrden();
+        temp = temp + " " + this.etiqueta;
+        if (hijoIzq != null) {
+            temp = temp + hijoIzq.preOrden();
         }
-        if (hijoDerecho != null) {
-            temp = temp + hijoDerecho.preOrden();
-        }
-        return temp;
-    }
-
-    /**
-     * Imprime en inorden el arbol separado por guiones.
-     *
-     * @return String conteniendo el InOrden
-     */
-    public String inOrden() {
-        String temp = "";
-        if (hijoIzquierdo != null) {
-            temp = hijoIzquierdo.inOrden() + ",";
-        }
-        temp += this.etiqueta;
-        if (hijoDerecho != null) {
-            temp = temp + "," + hijoDerecho.inOrden();
+        if (hijoDer != null) {
+            temp = temp + hijoDer.preOrden();
         }
         return temp;
-    }
-
-    public void inOrden(Lista<T> unaLista) {
-        Nodo<T> nodoLista = null;
-        if (hijoIzquierdo != null) {
-            this.hijoIzquierdo.inOrden(unaLista);
-        }
-        nodoLista = new Nodo<T>(this.getEtiqueta(),this.getDatos());
-        unaLista.insertar(nodoLista);
-        if (hijoDerecho != null) {
-            this.hijoDerecho.inOrden(unaLista);
-        }
     }
 
     /**
@@ -176,178 +98,190 @@ public class TElementoAB<T> implements ITElementoAB<T> {
      */
     public String postOrden() {
         String temp = "";
-        if (hijoIzquierdo != null) {
-            temp = hijoIzquierdo.postOrden();
+        if (hijoIzq != null) {
+            temp = hijoIzq.postOrden();
         }
-        if (hijoDerecho != null) {
-            temp = temp + hijoDerecho.postOrden();
+        if (hijoDer != null) {
+            temp = temp + hijoDer.postOrden();
         }
-        temp = temp + "," + etiqueta;
+        temp = temp + " " + etiqueta;
         return temp;
     }
 
     /**
-     * Retorna los datos contenidos en el elemento.
-     *
-     * @return
+     * @return recorrida en inorden del subArbol que cuelga del elemento actual
      */
-    public T getDatos() {
-        return this.dato;
+    @Override
+    public String inOrden() {
+        String temp = "";
+        if (hijoIzq != null) {
+            temp = hijoIzq.inOrden() + " ";
+        }
+        temp += this.etiqueta;
+        if (hijoDer != null) {
+            temp = temp + " " + hijoDer.inOrden();
+        }
+        return temp;
+    }
 
+    public void inOrden(Lista<T> unaLista) {
+        Nodo<T> nodoLista = null;
+        if (hijoIzq != null) {
+            this.hijoIzq.inOrden(unaLista);
+        }
+        nodoLista = new Nodo<T>(this.getEtiqueta(),this.getDatos());
+        unaLista.insertar(nodoLista);
+        if (hijoDer != null) {
+            this.hijoDer.inOrden(unaLista);
+        }
+    }
+
+    @Override
+    public Comparable getEtiqueta() {
+        return etiqueta;
     }
 
     /**
-     * Elimina un elemento dada una etiqueta.
-     *
-     * @param unaEtiqueta
      * @return
      */
-    public TElementoAB eliminar(Comparable unaEtiqueta) {
-        return null;
+    public String imprimir() {
+        return (etiqueta.toString());
     }
 
-    // Cantidad de Nodos
-    public int cantidadDeNodos() {
+    @Override
+    public T getDatos() {
+        return datos;
+    }
+
+    @Override
+    public void setHijoIzq(TElementoAB<T> elemento) {
+        this.hijoIzq = elemento;
+
+    }
+
+    @Override
+    public void setHijoDer(TElementoAB<T> elemento) {
+        this.hijoDer = elemento;
+    }
+
+
+
+    @Override
+    public int obtenerAltura() {
+        int alturaIzquierdo = 0;
+        int alturaDerecho = 0;
+        if (this.hijoIzq == null && this.hijoDer == null) {
+            return 0;
+        }
+        if (this.hijoIzq != null) {
+            alturaIzquierdo = this.hijoIzq.obtenerAltura();
+        }
+        if (this.hijoDer != null) {
+            alturaDerecho = this.hijoDer.obtenerAltura();
+        }
+        return 1 + (alturaIzquierdo > alturaDerecho ? alturaIzquierdo : alturaDerecho);
+    }
+
+
+    public int obtenerTamanio() {
         int contador1 = 0;
         int contador2 = 0;
         int contadorFinal = 0;
         if (this == null) {
             return 0;
         }
-        if (this.hijoIzquierdo != null) {
-            contador1 = this.hijoIzquierdo.cantidadDeNodos();
+        if (this.hijoIzq != null) {
+            contador1 = this.hijoIzq.obtenerTamanio();
         }
         if (this.getHijoDer() != null) {
-            contador2 = this.hijoDerecho.cantidadDeNodos();
+            contador2 = this.hijoDer.obtenerTamanio();
         }
         return contadorFinal = contador1 + contador2 + 1;
     }
 
-    public int obtenerAltura() {
-        int alturaIzquierdo = 0;
-        int alturaDerecho = 0;
-        if (this.hijoIzquierdo == null && this.hijoDerecho == null) {
-            return 0;
-        }
-        if (this.hijoIzquierdo != null) {
-            alturaIzquierdo = this.hijoIzquierdo.obtenerAltura();
-        }
-        if (this.hijoDerecho != null) {
-            alturaDerecho = this.hijoDerecho.obtenerAltura();
-        }
-        return 1 + (alturaIzquierdo > alturaDerecho ? alturaIzquierdo : alturaDerecho);
-    }
-
-    public int obtenerCantidadHojas() {
-        int hojasIzquierdo = 0;
-        int hojasDerecho = 0;
-        if (this.hijoIzquierdo == null && this.hijoDerecho == null) {
-            return 1;
-        }
-        if (this.hijoIzquierdo != null) {
-            hojasIzquierdo = this.hijoIzquierdo.obtenerCantidadHojas();
-        }
-        if (this.hijoDerecho != null) {
-            hojasDerecho = this.hijoDerecho.obtenerCantidadHojas();
-        }
-        return hojasIzquierdo + hojasDerecho;
-    }
-
-    public int obtenerNivelDeClave(Comparable unaEtiqueta) {
+    public int obtenerNivel(Comparable unaEtiqueta) {
         if (this.etiqueta.compareTo(unaEtiqueta) == 0) {
             return 0;
         }
-        if (this.hijoIzquierdo!=null) {
+        if (this.hijoIzq!=null) {
             if (this.etiqueta.compareTo(unaEtiqueta) > 0) {
-                return 1 + this.hijoIzquierdo.obtenerNivelDeClave(unaEtiqueta);
+                return 1 + this.hijoIzq.obtenerNivel(unaEtiqueta);
             }
         }
-        if (this.hijoDerecho!=null) {
+        if (this.hijoDer!=null) {
             if (this.etiqueta.compareTo(unaEtiqueta) < 0) {
-                return 1 + this.hijoDerecho.obtenerNivelDeClave(unaEtiqueta);
+                return 1 + this.hijoDer.obtenerNivel(unaEtiqueta);
             }
         }
         return -1;
     }
 
-    public Comparable obtenerMenorClave() {
-        if (this.hijoIzquierdo!=null) {
-            return this.hijoIzquierdo.obtenerMenorClave();
-        } else {
-            return this.getEtiqueta();
-        }
-    }
-
-    public Comparable obtenerMayorClave() {
-        if (this.hijoDerecho!=null) {
-            return this.hijoDerecho.obtenerMayorClave();
-        } else {
-            return this.getEtiqueta();
-        }
-    }
-
-    public Comparable obtenerClaveAnterior(Comparable clave) {
-        if (this.hijoIzquierdo!=null) {
-            if (this.etiqueta.compareTo(clave) > 0) {
-                if (this.hijoIzquierdo.getEtiqueta().equals(clave)) {
-                    return this.getEtiqueta();
-                } else {
-                    return this.hijoIzquierdo.obtenerClaveAnterior(clave);
-                }
-            }
-        }
-        if (this.hijoDerecho!=null) {
-            if (this.etiqueta.compareTo(clave) < 0) {
-                if (this.hijoDerecho.getEtiqueta().equals(clave)) {
-                    return this.getEtiqueta();
-                } else {
-                    return this.hijoDerecho.obtenerClaveAnterior(clave);
-                }
-            }
-        }
-        System.out.println("El árbol no tiene el nodo");
-        return null;
-    }
-
     public void cargarNivel(int nivel) {
         this.nivel = nivel;
-        if (this.hijoDerecho != null && this.hijoIzquierdo != null) {
-            this.hijoIzquierdo.cargarNivel(nivel+1);
-            this.hijoDerecho.cargarNivel(nivel+1);
-        } else if (this.hijoIzquierdo != null && this.hijoDerecho == null) {
-            this.hijoIzquierdo.cargarNivel(nivel+1);
-        } else if (this.hijoIzquierdo == null && this.hijoDerecho != null){
-            this.hijoDerecho.cargarNivel(nivel+1);
+        if (this.hijoDer != null && this.hijoIzq != null) {
+            this.hijoIzq.cargarNivel(nivel+1);
+            this.hijoDer.cargarNivel(nivel+1);
+        } else if (this.hijoIzq != null && this.hijoDer == null) {
+            this.hijoIzq.cargarNivel(nivel+1);
+        } else if (this.hijoIzq == null && this.hijoDer != null){
+            this.hijoDer.cargarNivel(nivel+1);
         }
     }
 
-    public void obtenerNodosNivel(int nivel, Lista<T> lista) {
-        if (this.nivel==nivel) {
-            Nodo<T> elementoAInsertar = new Nodo<T>(this.getEtiqueta(),this.getDatos());
-            lista.insertarPrimero(elementoAInsertar);
+    public int obtenerCantidadHojas() {
+        int hojasIzquierdo = 0;
+        int hojasDerecho = 0;
+        if (this.hijoIzq == null && this.hijoDer == null) {
+            return 1;
         }
-        if (hijoIzquierdo != null) {
-            this.hijoIzquierdo.obtenerNodosNivel(nivel,lista);
+        if (this.hijoIzq != null) {
+            hojasIzquierdo = this.hijoIzq.obtenerCantidadHojas();
         }
-        if (hijoDerecho != null) {
-            this.hijoDerecho.obtenerNodosNivel(nivel,lista);
+        if (this.hijoDer != null) {
+            hojasDerecho = this.hijoDer.obtenerCantidadHojas();
         }
+        return hojasIzquierdo + hojasDerecho;
     }
 
-    public void obtenerHojas(Lista<T> lista) {
-        if (this.hijoIzquierdo == null && hijoDerecho == null) {
-            Nodo<T> elementoAInsertar = new Nodo<T>(this.getEtiqueta(),this.getDatos());
-            lista.insertarPrimero(elementoAInsertar);
+    public TElementoAB eliminar(Comparable unaEtiqueta){
+
+        if(unaEtiqueta.compareTo(this.etiqueta) < 0){
+            if(this.hijoIzq != null){
+                this.hijoIzq = this.hijoIzq.eliminar(unaEtiqueta);
+            }
+            return this;
         }
-        if (hijoIzquierdo != null) {
-            this.hijoIzquierdo.obtenerHojas(lista);
+
+        if(unaEtiqueta.compareTo(this.etiqueta) > 0){
+            if(this.hijoDer != null){
+                this.hijoDer = this.hijoDer.eliminar(unaEtiqueta);
+            }
+            return this;
         }
-        if (hijoDerecho != null) {
-            this.hijoDerecho.obtenerHojas(lista);
-        }
+        return this.quitaElNodo();
     }
 
-    public int getNivel() {
-        return this.nivel;
+    public TElementoAB quitaElNodo(){
+        if(this.hijoIzq == null){
+            return this.hijoDer;
+        }
+        if(this.hijoDer == null){
+            return this.hijoIzq;
+        }
+
+        TElementoAB elHijo = this.hijoIzq;
+        TElementoAB elPadre = this;
+        while(elHijo.hijoDer != null){
+            elPadre = elHijo;
+            elHijo = elHijo.hijoDer;
+        }
+
+        if(elPadre != this){
+            elPadre.hijoDer = elHijo.hijoIzq;
+            elHijo.hijoIzq = this.hijoIzq;
+        }
+
+        elHijo.hijoDer = this.hijoDer;
+        return elHijo;
     }
 }
