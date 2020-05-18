@@ -55,7 +55,7 @@ public class CasoDeEstudio {
                 descripcion = itemsLinea[1].replaceAll("\"","");
                 precio = Double.parseDouble(itemsLinea[2]);
                 IProducto productoNuevo = new Producto(precio, codigo, descripcion, 0);
-                inventario.incorporarProductoNuevo(productoNuevo, codigo);
+                inventario.incorporarProducto(productoNuevo, codigo);
             } catch (Exception e) {
                // System.out.println("Error al procesar linea: " + contador);
                // System.out.println(e.getMessage());
@@ -179,7 +179,11 @@ public class CasoDeEstudio {
         incorporarProductosPorArchivo("archivos_caso_prueba/productos.txt",inventario);
         incorporarSucursalesPorArchivo("archivos_caso_prueba/sucursales.txt",inventario);
         incorporarProductosSucursalPorArchivo("archivos_caso_prueba/stock.txt", inventario);
-        //String[] lista = {"clark","kent","Small","ville","Lana","Lang","Chloe","Sullivan","Jonathan"};
-        //desordenarLista(lista);
+        System.out.println("Listado Productos: ");
+        String[] array1 = inventario.listarProductosPorCiudadBarrioNombre();
+        String[] array2 = inventario.listarProductosOrdenadosPorNombre();
+        for(int i=0;i<array2.length;i++) {
+            System.out.println(array2[i]);
+        }
     }
 }

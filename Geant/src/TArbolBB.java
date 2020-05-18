@@ -83,7 +83,14 @@ public class TArbolBB<T> implements IArbolBB<T> {
         if (!esVacio()) {
             raiz.inOrden(listaInOrden);
         }
-        return listaInOrden;
+        Lista<T> listaAuxiliar = new Lista<T>();
+        Nodo<T> nodoActual = listaInOrden.getPrimero();
+        while (nodoActual != null) {
+            Nodo<T> nodoCopia = new Nodo<T>(nodoActual.getEtiqueta(),nodoActual.getDato());
+            listaAuxiliar.insertarPrimero(nodoCopia);
+            nodoActual = nodoActual.getSiguiente();
+        }
+        return listaAuxiliar;
     }
 
     /**

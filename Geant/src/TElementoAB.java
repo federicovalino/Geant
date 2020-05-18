@@ -130,7 +130,7 @@ public class TElementoAB<T> implements IElementoAB<T> {
             this.hijoIzq.inOrden(unaLista);
         }
         nodoLista = new Nodo<T>(this.getEtiqueta(),this.getDatos());
-        unaLista.insertar(nodoLista);
+        unaLista.insertarPrimero(nodoLista);
         if (hijoDer != null) {
             this.hijoDer.inOrden(unaLista);
         }
@@ -284,4 +284,5 @@ public class TElementoAB<T> implements IElementoAB<T> {
         elHijo.hijoDer = this.hijoDer;
         return elHijo;
     }
+
 }
