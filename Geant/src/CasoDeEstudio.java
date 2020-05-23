@@ -128,14 +128,14 @@ public class CasoDeEstudio {
             try {
                 contador++;
                 if (itemsLinea.length > 3) {
-                    throw new Exception("La línea contiene más de 4 campos.");
+                    throw new Exception("La línea contiene más de 3 campos.");
                 }
                 clavSuc = itemsLinea[0].replaceAll("\"","");
                 clavProd = itemsLinea[1].replaceAll("\"","");
                 cantidad = Integer.parseInt(itemsLinea[2]);
                 inventario.incorporarProductoSucursal(clavProd, clavSuc, cantidad);
             } catch (Exception e) {
-                //System.out.println("Error al procesar linea: " + contador);
+                System.out.println("Error al procesar linea: " + contador);
                 //System.out.println(e.getMessage());
                 bandera = false;
             }
@@ -174,16 +174,14 @@ public class CasoDeEstudio {
     }
 
     public static void main(String[] args) {
-        // TODO code application logic here
         InventarioGeant inventario = new InventarioCentral();
-        incorporarProductosPorArchivo("archivos_caso_prueba/productos.txt",inventario);
-        incorporarSucursalesPorArchivo("archivos_caso_prueba/sucursales.txt",inventario);
-        incorporarProductosSucursalPorArchivo("archivos_caso_prueba/stock.txt", inventario);
+        incorporarProductosPorArchivo("src/archivos_caso_prueba/productos.txt",inventario);
+        incorporarSucursalesPorArchivo("src/archivos_caso_prueba/sucursales.txt",inventario);
+        incorporarProductosSucursalPorArchivo("src/archivos_caso_prueba/stock.txt", inventario);
         System.out.println("Listado Productos: ");
         String[] array1 = inventario.listarProductosPorCiudadBarrioNombre();
         String[] array2 = inventario.listarProductosOrdenadosPorNombre();
-        for(int i=0;i<array2.length;i++) {
-            System.out.println(array2[i]);
-        }
+        ManejadorArchivosGenerico.escribirArchivo("ProductosOrdenadosPorCiudadBarrioNombreStock.txt", array1);
+        ManejadorArchivosGenerico.escribirArchivo("ProductosOrdenadosNombreStock.txt", array2);
     }
 }

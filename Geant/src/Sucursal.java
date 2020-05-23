@@ -95,16 +95,19 @@ public class Sucursal implements IAlmacen {
         }
     }
 
-    public void insertarProducto(IProducto unProducto) {
-        TElementoAB<IProducto> nodoNuevo = new TElementoAB<IProducto>(unProducto.getEtiqueta(),unProducto);
+    public boolean insertarProducto(IProducto unProducto) {
+        TElementoAB<IProducto> nodoNuevo = new TElementoAB<IProducto>
+                (unProducto.getEtiqueta(),unProducto);
         if (this.productos == null) {
             this.productos = new TArbolBB<IProducto>(nodoNuevo);
+            return true;
         } else {
             Boolean estaEnAlmacen = this.agregarStock
                 (unProducto.getEtiqueta(), unProducto.getStock());
             if (estaEnAlmacen != true) {
-                this.productos.insertar(nodoNuevo);
+                return this.productos.insertar(nodoNuevo);
             }
+            return estaEnAlmacen;
         }
     }
 
@@ -181,162 +184,4 @@ public class Sucursal implements IAlmacen {
     public int cantidadProductos() {
         return this.productos.obtenerTamanio();
     }
-
 }
-
-/*
-    public void actualizarProductosPorArchivo(String nombreArchivo) {
-        String[] contenidoArchivo = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
-        String codigo;
-        String descripcion;
-        int precio;
-        int cantidad;
-        int valorAgregado = 0;
-        String[] itemsLinea;
-        IProducto productoEncontrado;
-        for (int i = 0; i < contenidoArchivo.length; i++) {
-            itemsLinea = contenidoArchivo[i].split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-            try {
-                if (itemsLinea.length > 4) {
-                    throw new Exception("La línea contiene más de 4 campos.");
-                }
-                codigo = itemsLinea[0];
-                descripcion = itemsLinea[1];
-                precio = Integer.parseInt(itemsLinea[2]);
-                cantidad = Integer.parseInt(itemsLinea[3]);
-
-                valorAgregado += precio * cantidad;
-                productoEncontrado = this.buscarPorCodigo(codigo);
-                if (productoEncontrado == null) {
-                    IProducto productoNuevo = new Producto(codigo, descripcion, precio, cantidad);
-                    this.insertarProducto(productoNuevo);
-                } else {
-                    this.agregarStock(codigo, cantidad);
-                }
-            } catch (Exception e) {
-                System.out.println("Error al procesar linea:\n" + contenidoArchivo[i]);
-                System.out.println(e.getMessage());
-            }
-        }
-        System.out.println("El valor del inventario aumentó: " + valorAgregado);
-    }
-
-
-    public void eliminarProductosPorArchivo(String nombreArchivo) {
-        String[] contenidoArchivo = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
-        String codigo;
-        int valorAgregado = 0;
-        Producto productoEncontrado;
-        for (int i = 0; i < contenidoArchivo.length; i++) {
-            try {
-                codigo = contenidoArchivo[i];
-                productoEncontrado = this.buscarPorCodigo(codigo);
-                if (productoEncontrado == null) {
-                    System.out.println("No existe el producto");
-                } else {
-                    valorAgregado += productoEncontrado.getStock() * productoEncontrado.getPrecio();
-                    //productoEncontrado.restarStock(productoEncontrado.getStock());
-                    this.eliminarProducto(codigo);
-                }
-            } catch (Exception e) {
-                System.out.println("Error al procesar linea:\n" + contenidoArchivo[i]);
-                System.out.println(e.getMessage());
-            }
-        }
-        System.out.println("El valor del inventario se redujo: " + valorAgregado);
-    }*/
-
-
-
-
-/*
-    public boolean insertarProducto(Producto unProducto) {
-        TElementoAB<Producto> producto = new TElementoAB<Producto>(unProducto.getEtiqueta(),unProducto);
-        return this.arbolProductos.insertar(producto);
-    }
-
-
-    public boolean eliminar(Comparable clave) {
-        return false;
-    }
-
-
-    public String imprimirProductosInOrden() {
-        return this.arbolProductos.inOrden();
-    }
-
-    public String imprimirProductosPostOrden() {
-        return this.arbolProductos.postOrden();
-    }
-
-    public String imprimirProductosPreOrden() {
-        return this.arbolProductos.preOrden();
-    }
-
-    public boolean agregarStock(Comparable clave, Integer cantidad) {
-        Producto elemento = buscarPorCodigo(clave);
-        if (elemento==null) {
-            System.out.println("No existe producto a agregar Stock");
-            return false;
-        } else {
-            elemento.setStock(elemento.getStock() + cantidad);
-            return true;
-        }
-    }
-
-    @Override
-    public boolean restarStock(Comparable clave, Integer cantidad) {
-        Producto elemento = buscarPorCodigo(clave);
-        if (elemento==null) {
-            System.out.println("No existe producto a agregar Stock");
-            return false;
-        } else {
-            int cantidadStock = elemento.getStock();
-            if (cantidadStock>=cantidad) {
-                elemento.setStock(elemento.getStock() - cantidad);
-                return true;
-            } else {
-                System.out.println("La cantidad solicitada sobrepasa "
-                + "el stock remanente quedan: "+ cantidadStock+" elementos");
-                return false;
-            }
-        }
-    }
-
-    @Override
-    public Producto buscarPorCodigo(Comparable clave) {
-        return getArbolProductos().buscar(clave).getDatos();
-    }
-
-    public void listarOrdenadoPorNombre() {
-
-    }
-
-    public Producto buscarPorDescripcion(String descripcion) {
-        return null;
-    }
-
-    public int cantidadProductos() {
-        return 0;
-    }
-
-    public String listarProductosOrdenadosPorNombre() {
-        Lista<Producto> lista = this.arbolProductos.inorden();
-        TArbolBB<Producto> productos = new TArbolBB<Producto>();
-        Nodo<Producto> nodoActual = lista.getPrimero();
-        while (nodoActual != null) {
-            Producto dato = nodoActual.getDato();
-            TElementoAB<Producto> producto = new TElementoAB<Producto>(dato.getNombre(),dato);
-            productos.insertar(producto);
-            nodoActual = nodoActual.getSiguiente();
-        }
-        lista = productos.inorden();
-        nodoActual = lista.getPrimero();
-        String acumulador = "";
-        while (nodoActual != null) {
-            Producto dato = nodoActual.getDato();
-            acumulador+= dato.getNombre() +","+dato.getPrecio()+"\n";
-        }
-        return acumulador;
-    }
-*/

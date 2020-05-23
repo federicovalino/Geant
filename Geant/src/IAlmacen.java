@@ -38,8 +38,9 @@ public interface IAlmacen {
      * Incorporar un nuevo producto al supermercado.
      *
      * @param unProducto
+     * @return
      */
-    public void insertarProducto(IProducto unProducto);
+    public boolean insertarProducto(IProducto unProducto);
 
     /**
      * Eliminar productos que ya no se venden (por no ser comercializados m�s).
@@ -109,4 +110,5 @@ public interface IAlmacen {
      */
     public int cantidadProductos();
 
+  //  public String[] obtenerProductos();
 }

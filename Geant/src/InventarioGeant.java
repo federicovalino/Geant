@@ -4,9 +4,7 @@ public interface InventarioGeant {
 
     public boolean incorporarProducto(IProducto producto, Comparable clave);
 
-    public void incorporarProductoSucursal(Comparable claveProd, Comparable claveSuc,int cantidad);
-
-    public void agregarStock(Comparable clave, int cantidad);
+    public boolean incorporarProductoSucursal(Comparable claveProd, Comparable claveSuc,int cantidad);
 
     public boolean agregarStockSucursal(Comparable clave, Comparable sucursal, int cantidad);
 
@@ -16,7 +14,7 @@ public interface InventarioGeant {
 
     public boolean ventaSucursal(Comparable claveProd, Comparable claveSuc, int cantidad);
 
-    public void eliminarProducto(Comparable producto);
+    public boolean eliminarProducto(Comparable producto);
 
     public boolean eliminarProductoSucursal(Comparable producto,Comparable sucursal);
 

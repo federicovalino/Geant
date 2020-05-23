@@ -123,7 +123,6 @@ public class Lista<T> implements ILista<T> {
     public int cantElementos() {
         int contador = 0;
         if (esVacia()) {
-            System.out.println("Cantidad de elementos 0.");
             return 0;
         } else {
             INodo<T> aux = primero;

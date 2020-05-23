@@ -1,23 +1,24 @@
 
+import java.security.SecureRandom;
+import java.math.BigInteger;
+
 public class InventarioCentral implements InventarioGeant {
 
     private TArbolBB<IAlmacen> almacenes;
     private TArbolBB<IProducto> catalogo;
-    private TArbolBB<IProducto> registro;
 
-    public InventarioCentral(TArbolBB<IAlmacen> arbolAlmacenes){
+    public InventarioCentral(TArbolBB<IAlmacen> arbolAlmacenes) {
         this.almacenes = arbolAlmacenes;
     }
 
-    public InventarioCentral(){
+    public InventarioCentral() {
         this.almacenes = new TArbolBB<IAlmacen>();
         this.catalogo = new TArbolBB<IProducto>();
-        this.registro = new TArbolBB<IProducto>();
     }
 
     public boolean incorporarSucursal(IAlmacen sucursal, Comparable clave) {
         if (!this.existeSucursal(clave)) {
-            TElementoAB<IAlmacen> sucursalNodo = new TElementoAB<IAlmacen>(clave,sucursal);
+            TElementoAB<IAlmacen> sucursalNodo = new TElementoAB<IAlmacen>(clave, sucursal);
             return this.almacenes.insertar(sucursalNodo);
         } else {
             return false;
@@ -25,38 +26,24 @@ public class InventarioCentral implements InventarioGeant {
     }
 
     public boolean incorporarProducto(IProducto producto, Comparable clave) {
-        TElementoAB<IProducto> productoNodo = new TElementoAB<IProducto>(clave,producto);
+        TElementoAB<IProducto> productoNodo = new TElementoAB<IProducto>(clave, producto);
         return this.catalogo.insertar(productoNodo);
     }
 
-    public void incorporarProductoSucursal(Comparable claveProd, Comparable claveSuc,int cantidad) {
+    public boolean incorporarProductoSucursal(Comparable claveProd, Comparable claveSuc, int cantidad) {
         TElementoAB<IProducto> producto = this.catalogo.buscar(claveProd);
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
         if (producto != null && sucursal != null) {
 
-            producto.getDatos().setStock(producto.getDatos().getStock()
-                                                        + cantidad);
+            producto.getDatos().setStock(producto.getDatos().getStock() + cantidad);
 
             IProducto productoClonado = new Producto(producto.getDatos().getPrecio(),
-                producto.getDatos().getEtiqueta(),producto.getDatos().getNombre(),cantidad);
+                    producto.getDatos().getNombre() + "," + producto.getDatos().getEtiqueta(),
+                    producto.getDatos().getNombre(), cantidad);
 
-            sucursal.getDatos().insertarProducto(productoClonado);
-
-            IAlmacen sucDato = sucursal.getDatos();
-
-            Comparable etiqueta = sucDato.getCiudad() + "," +
-                    sucDato.getBarrio() + "," + productoClonado.getNombre();
-
-            TElementoAB<IProducto> productoRegistrado = new TElementoAB<IProducto>(etiqueta, productoClonado);
-            this.registro.insertar(productoRegistrado);
-        }
-    }
-
-    public void agregarStock(Comparable clave, int cantidad) {
-        TElementoAB<IProducto> producto = this.catalogo.buscar(clave);
-        if (producto!=null) {
-            int cantAnterior = producto.getDatos().getStock();
-            producto.getDatos().setStock(cantAnterior + cantidad);
+            return sucursal.getDatos().insertarProducto(productoClonado);
+        } else {
+            return false;
         }
     }
 
@@ -64,12 +51,12 @@ public class InventarioCentral implements InventarioGeant {
         TElementoAB<IProducto> producto = this.catalogo.buscar(claveProd);
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
         if (producto != null && sucursal != null) {
-            return sucursal.getDatos().agregarStock(claveProd, cantidad);
+            return sucursal.getDatos().agregarStock(producto.getDatos().getNombre()
+                    + "," + claveProd, cantidad);
         } else {
             return false;
         }
     }
-
 
     public IProducto buscarProducto(Comparable etiqueta) {
         TElementoAB<IProducto> producto = this.catalogo.buscar(etiqueta);
@@ -82,57 +69,96 @@ public class InventarioCentral implements InventarioGeant {
 
     public IProducto buscarProductoSucursal(Comparable claveProd, Comparable claveSuc) {
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
-        if (sucursal != null) {
-            return sucursal.getDatos().buscarPorCodigo(claveProd);
-        } else {
+        TElementoAB<IProducto> producto = this.catalogo.buscar(claveProd);
+        if (sucursal != null && producto != null) {
+            IProducto prodBuscado = sucursal.getDatos().buscarPorCodigo(producto.getDatos().getNombre() + "," + claveProd);
+            if (prodBuscado != null) {
+                return prodBuscado;
+            } else {
+                enQueSucursales(claveProd);
+                return null;
+            }
+        } else if (producto != null) {
+            System.out.println("El producto que buscas no existe");
             return null;
+        } else {
+            System.out.println("La sucursal en la que buscas no existe");
+            return null;
+        }
+    }
+
+    private void enQueSucursales(Comparable clavProd) {
+        IProducto producto = this.buscarProducto(clavProd);
+        System.out.println("El producto no tiene stock en la sucursal que buscas");
+        if (producto.getStock().equals(0)) {
+            System.out.println("El producto buscado no tiene stock en otras sucursales");
+        } else {
+            Lista<IAlmacen> listaAlmacen = this.almacenes.inorden();
+            Nodo<IAlmacen> nodoActual = listaAlmacen.getPrimero();
+            while (nodoActual != null) {
+                if (nodoActual.getDato().buscarPorCodigo(producto.getNombre() + "," + clavProd) != null) {
+                    System.out.println("El producto tiene stock en "
+                            + nodoActual.getDato().getId()
+                            + " " + nodoActual.getDato().getCiudad());
+                }
+                nodoActual = nodoActual.getSiguiente();
+            }
         }
     }
 
     public boolean ventaSucursal(Comparable claveProd, Comparable claveSuc, int cantidad) {
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
-        if (sucursal != null) {
-            return sucursal.getDatos().venta(claveProd, cantidad);
+        TElementoAB<IProducto> prodInv = this.catalogo.buscar(claveProd);
+        if (sucursal != null & prodInv != null) {
+            if (sucursal.getDatos().venta(prodInv.getDatos().getNombre() + "," + claveProd, cantidad)) {
+                int cant = prodInv.getDatos().getStock();
+                prodInv.getDatos().setStock(cant - cantidad);
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
     }
 
-    public void eliminarProducto(Comparable claveProd) {
+    public boolean eliminarProducto(Comparable claveProd) {
         Lista<IAlmacen> lista = almacenes.inorden();
         Nodo<IAlmacen> nodoActual = lista.getPrimero();
         TElementoAB<IProducto> prod = this.catalogo.buscar(claveProd);
-        while(nodoActual != null) {
-            nodoActual.getDato().eliminarProducto(claveProd);
-            IAlmacen sucActual = nodoActual.getDato();
-
-            this.registro.eliminar(sucActual.getCiudad() +
-                    sucActual.getBarrio() + prod.getDatos().getNombre());
-
-            nodoActual = nodoActual.getSiguiente();
+        if (prod == null) {
+            return false;
+        } else {
+            while (nodoActual != null) {
+                nodoActual.getDato().eliminarProducto(prod.getDatos().getEtiqueta()
+                        + "," + claveProd);
+                nodoActual = nodoActual.getSiguiente();
+            }
+            this.catalogo.eliminar(claveProd);
+            return true;
         }
-        this.catalogo.eliminar(claveProd);
     }
 
-    public boolean eliminarProductoSucursal(Comparable producto,Comparable claveSuc) {
+    public boolean eliminarProductoSucursal(Comparable producto, Comparable claveSuc) {
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
-        if (sucursal != null) {
-            return sucursal.getDatos().eliminarProducto(producto);
+        TElementoAB<IProducto> prod = this.catalogo.buscar(producto);
+        if (sucursal != null && prod != null) {
+            return sucursal.getDatos().eliminarProducto(prod.getDatos().getNombre() + "," + producto);
         } else {
             return false;
         }
     }
 
     public boolean existeProducto(Comparable producto) {
-        return this.catalogo.buscar(producto)!=null;
+        return this.catalogo.buscar(producto) != null;
     }
 
     public boolean existeSucursal(Comparable sucursal) {
-        return this.almacenes.buscar(sucursal)!=null;
+        return this.almacenes.buscar(sucursal) != null;
     }
 
     public boolean locacionesProducto(Comparable producto) {
-        return this.catalogo.buscar(producto)!=null;
+        return this.catalogo.buscar(producto) != null;
     }
 
     public int obtenerCantidadCatalogo() {
@@ -143,17 +169,66 @@ public class InventarioCentral implements InventarioGeant {
         return this.almacenes.obtenerTamanio();
     }
 
-    public String[] listarProductosPorCiudadBarrioNombre() {
-        Lista<IProducto> prodRegistrados = this.registro.inorden();
-        Nodo<IProducto> nodoActual = prodRegistrados.getPrimero();
-        int cantidad = prodRegistrados.cantElementos();
-        String[] listado = new String[cantidad];
-        int i = 0;
-        while(nodoActual != null) {
-            listado[i] = nodoActual.getEtiqueta() + ","
-                + String.valueOf(nodoActual.getDato().getStock());
+    private TArbolBB<IAlmacen> obtenerAlmacenesOrdenadosPorNombre() {
+        Lista<IAlmacen> listaAlmacenes = this.almacenes.inorden();
+        if (listaAlmacenes == null) {
+            return null;
+        }
+        Nodo<IAlmacen> nodoActual = listaAlmacenes.getPrimero();
+        TArbolBB<IAlmacen> arbol = new TArbolBB<IAlmacen>();
+        while (nodoActual != null) {
+            TElementoAB<IAlmacen> nodo = new TElementoAB<IAlmacen>(nodoActual.getDato().getCiudad() + ","
+                    + nodoActual.getDato().getBarrio(), nodoActual.getDato());
+
+            arbol.insertar(nodo);
             nodoActual = nodoActual.getSiguiente();
-            i++;
+        }
+        return arbol;
+    }
+
+    private Lista<Lista<IProducto>> ordenarProductosPorCiudadBarrioNombre() {
+        TArbolBB<IAlmacen> arbol = obtenerAlmacenesOrdenadosPorNombre();
+        if (arbol == null) {
+            return null;
+        }
+        Lista<IAlmacen> lista = arbol.inorden();
+        Nodo<IAlmacen> nodoActual = lista.getPrimero();
+        Lista<Lista<IProducto>> listaProd = new Lista<Lista<IProducto>>();
+        while (nodoActual != null) {
+            Lista<IProducto> producto = nodoActual.getDato().getArbolProductos().inorden();
+            listaProd.insertar(new Nodo<Lista<IProducto>>(nodoActual.getEtiqueta(), producto));
+            nodoActual = nodoActual.getSiguiente();
+        }
+        return listaProd;
+    }
+
+    public String[] listarProductosPorCiudadBarrioNombre() {
+        Lista<Lista<IProducto>> listaProd = ordenarProductosPorCiudadBarrioNombre();
+        if (listaProd == null) {
+            return null;
+        }
+        Nodo<Lista<IProducto>> nodoActual = listaProd.getPrimero();
+        int cantidad = 0;
+        while (nodoActual != null) {
+            cantidad = cantidad + nodoActual.getDato().cantElementos();
+            nodoActual = nodoActual.getSiguiente();
+        }
+        String[] listado = new String[cantidad];
+        nodoActual = listaProd.getPrimero();
+        if (nodoActual == null) {
+            return null;
+        }
+        int i = 0;
+        while (nodoActual != null) {
+            Nodo<IProducto> nodoAuxiliar = nodoActual.getDato().getPrimero();
+            while (nodoAuxiliar != null) {
+                listado[i] = nodoActual.getEtiqueta() + ","
+                        + nodoAuxiliar.getDato().getNombre() + ","
+                        + nodoAuxiliar.getDato().getStock();
+                i++;
+                nodoAuxiliar = nodoAuxiliar.getSiguiente();
+            }
+            nodoActual = nodoActual.getSiguiente();
         }
         return listado;
     }
@@ -161,119 +236,25 @@ public class InventarioCentral implements InventarioGeant {
     public String[] listarProductosOrdenadosPorNombre() {
         Nodo<IProducto> nodoActual = this.catalogo.inorden().getPrimero();
         TArbolBB<IProducto> arbol = new TArbolBB<IProducto>();
-        int i=0;
-        while(nodoActual != null) {
-            TElementoAB<IProducto> nodoArbol = new TElementoAB<IProducto>
-                (nodoActual.getDato().getNombre(),nodoActual.getDato());
+        while (nodoActual != null) {
+            TElementoAB<IProducto> nodoArbol = new TElementoAB<IProducto>(nodoActual.getDato().getNombre(), nodoActual.getDato());
             arbol.insertar(nodoArbol);
             nodoActual = nodoActual.getSiguiente();
-            i++;
         }
-        String[] listado = new String[i];
-        nodoActual = arbol.inorden().getPrimero();
+        Lista<IProducto> lista = arbol.inorden();
+        int cantidad = lista.cantElementos();
+        String[] listado = new String[cantidad];
+        nodoActual = lista.getPrimero();
         int j = 0;
-        while(nodoActual != null) {
+        if (nodoActual == null) {
+            return null;
+        }
+        while (nodoActual != null) {
             listado[j] = nodoActual.getDato().getNombre() + ","
-                + String.valueOf(nodoActual.getDato().getStock());
+                    + String.valueOf(nodoActual.getDato().getStock());
             nodoActual = nodoActual.getSiguiente();
             j++;
         }
         return listado;
     }
-
 }
-
-/*
-    public void incorporarProducto (Producto producto, Comparable sucursal) {
-        try {
-            TElementoAB<IAlmacen> almacen = this.almacenes.buscar(sucursal);
-
-            TElementoAB<Producto> productoAlmacen =
-                this.productos.buscar(producto.getEtiqueta());
-
-            Producto productoNuevo = new Producto(producto.getPrecio(),
-                producto.getCodigo(),producto.getNombre(),producto.getStock());
-
-            TElementoAB<Producto> nuevoElementoProducto =
-            new TElementoAB<Producto>(productoNuevo, productoNuevo.getEtiqueta());
-
-            if (productoAlmacen == null && almacen != null) {
-                almacen.getDatos().insertarProducto(producto);
-                productos.insertar(nuevoElementoProducto);
-
-            } else if (almacen == null) {
-
-                System.out.print("No existe el almacén " + sucursal);
-
-            } else if (productoAlmacen != null && almacen != null) {
-                Producto productoSucursal = almacen.getDatos().
-                    getArbolProductos().buscar(producto.getEtiqueta()).getDatos();
-
-                productoAlmacen.getDatos().setStock
-                    (producto.getStock() + productoAlmacen.getDatos().getStock());
-
-                if (productoSucursal == null) {
-                    almacen.getDatos().insertarProducto(producto);
-                } else {
-                    almacen.getDatos().agregarStock(producto.getEtiqueta(), producto.getStock());
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Error en incorporación: " + e.getMessage());
-        }
-    }
-
-    public void agregarStockSucursal(Comparable claveProducto, Comparable sucursal, int cantidad) {
-        Producto producto = this.productos.buscar(claveProducto).getDatos();
-        producto.setStock(producto.getStock() + cantidad);
-        Producto productoSucursal =
-            (Producto) almacenes.buscar(sucursal).getDatos().buscarPorCodigo(claveProducto);
-        productoSucursal.setStock(productoSucursal.getStock() + cantidad);
-    }
-
-    public void agregarStock(Comparable clave, int cantidad) {
-        Producto producto = this.productos.buscar(clave).getDatos();
-        producto.setStock(producto.getStock() + cantidad);
-    }
-
-
-    public void venta(Comparable claveProducto) {
-        Producto producto = this.productos.buscar(claveProducto).getDatos();
-        producto.setStock(producto.getStock() - 1);
-    }
-
-    public void ventaSucursal(Comparable claveProducto, Comparable sucursal) {
-        Producto producto = this.productos.buscar(claveProducto).getDatos();
-        producto.setStock(producto.getStock() - 1);
-    }
-
-    public boolean existeEnAlmacen(Comparable etiqueta) {
-        return this.productos.buscar(etiqueta)!=null;
-    }
-
-    public String productosOrdenadosPorNombre() {
-        TArbolBB<Producto> arbol = obtenerArbolOrdenadoPorNombre();
-        Lista<Producto> listaNodosDelArbol = arbol.inorden();
-        Nodo<Producto> nodoActual = listaNodosDelArbol.getPrimero();
-        String stringADevolver = "";
-        while (nodoActual != null) {
-            Producto producto = nodoActual.getDato();
-            stringADevolver = stringADevolver + producto.getNombre()
-                    + "," + producto.getStock() + "\n";
-            nodoActual = nodoActual.getSiguiente();
-        }
-        return stringADevolver;
-    }
-
-    public TArbolBB<Producto> obtenerArbolOrdenadoPorNombre() {
-        Lista<Producto> listaNodosDelArbol = this.productos.inorden();
-        Nodo<Producto> nodoActual = listaNodosDelArbol.getPrimero();
-        TArbolBB<Producto> arbol = new TArbolBB<Producto>();
-        while (nodoActual != null) {
-            Producto productoNuevo = nodoActual.getDato();
-            TElementoAB<Producto> producto = new TElementoAB<Producto>(productoNuevo.getNombre(),productoNuevo);
-            arbol.raiz.insertar(producto);
-            nodoActual = nodoActual.getSiguiente();
-        }
-        return arbol;
-    }*/
