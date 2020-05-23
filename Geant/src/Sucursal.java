@@ -171,7 +171,21 @@ public class Sucursal implements IAlmacen {
         return this.productos.buscar(clave) != null;
     }
 
-    @Override
+    public String[] listarOrdenadoPorNombre() {
+        Lista<IProducto> listaOrdenada = this.productos.inorden();
+        if (listaOrdenada==null) {
+            return null;
+        }
+        String[] arrayOrdenado = new String[listaOrdenada.cantElementos()];
+        int i = 0;
+        Nodo<IProducto> nodoActual = listaOrdenada.getPrimero();
+        while(nodoActual!=null) {
+            arrayOrdenado[i] = nodoActual.getDato().getNombre()+","+nodoActual.getDato().getStock();
+            nodoActual=nodoActual.getSiguiente();
+        }
+        return arrayOrdenado;
+    }
+    
     public boolean eliminarProducto(Comparable clave) {
         this.productos.eliminar(clave);
         return this.buscarPorCodigo(clave) == null;
