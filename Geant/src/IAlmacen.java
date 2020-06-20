@@ -28,14 +28,9 @@ public interface IAlmacen {
     public void setDepartamento(String departamento);
 
     public TArbolBB<IProducto> getArbolProductos();
-    /**
-     * Incorporar un nuevo producto al supermercado.
-     *
-     * @param unProducto
-     */
 
     /**
-     * Incorporar un nuevo producto al supermercado.
+     * Incorporar un nuevo producto a la sucursal.
      *
      * @param unProducto
      * @return
@@ -88,19 +83,11 @@ public interface IAlmacen {
     public IProducto buscarPorCodigo(Comparable clave);
 
     /**
-     * Listar todos los productos registrados, ordenados por nombre, presentando
-     * adem�s su stock. Imprime por consola la lista de todos los productos
-     * registrados y su stock actual.
-     */
-    //public void listarOrdenadoPorNombre();
-
-    /**
-     * Busca un producto por su descripci�n.
+     * Ordena toda la lista nombre y stock
      *
-     * @param descripcion
-     * @return
+     * @return array de string
      */
-    //public IProducto buscarPorDescripcion(String descripcion);
+    public String[] listarOrdenadoPorNombre();
 
     /**
      * Retorna el tama�o del almacen: cantidad de productos. No es lo mismo que
@@ -109,6 +96,4 @@ public interface IAlmacen {
      * @return
      */
     public int cantidadProductos();
-
-  //  public String[] obtenerProductos();
 }

@@ -7,29 +7,53 @@ public class InventarioCentral implements InventarioGeant {
     private TArbolBB<IAlmacen> almacenes;
     private TArbolBB<IProducto> catalogo;
 
+    /**
+     * Método Constructor que recibe árbol
+     */
     public InventarioCentral(TArbolBB<IAlmacen> arbolAlmacenes) {
         this.almacenes = arbolAlmacenes;
     }
 
+    /**
+     * Método Constructor
+     */
     public InventarioCentral() {
         this.almacenes = new TArbolBB<IAlmacen>();
         this.catalogo = new TArbolBB<IProducto>();
     }
 
+    /**
+     * Método que incorpora sucursal a inventario
+     *
+     * @param sucursal
+     * @param clave
+     * @return boolean
+     */
     public boolean incorporarSucursal(IAlmacen sucursal, Comparable clave) {
-        if (!this.existeSucursal(clave)) {
-            TElementoAB<IAlmacen> sucursalNodo = new TElementoAB<IAlmacen>(clave, sucursal);
-            return this.almacenes.insertar(sucursalNodo);
-        } else {
-            return false;
-        }
+        TElementoAB<IAlmacen> sucursalNodo = new TElementoAB<IAlmacen>(clave, sucursal);
+        return this.almacenes.insertar(sucursalNodo);
     }
 
+    /**
+     * Método que inserta producto en inventario
+     *
+     * @param producto
+     * @param clave
+     * @return boolean
+     */
     public boolean incorporarProducto(IProducto producto, Comparable clave) {
         TElementoAB<IProducto> productoNodo = new TElementoAB<IProducto>(clave, producto);
         return this.catalogo.insertar(productoNodo);
     }
 
+    /**
+     * Método que inserta en sucursal un producto existente en inventario
+     *
+     * @param claveProd
+     * @param claveSuc
+     * @param cantida
+     * @return valor booleano
+     */
     public boolean incorporarProductoSucursal(Comparable claveProd, Comparable claveSuc, int cantidad) {
         TElementoAB<IProducto> producto = this.catalogo.buscar(claveProd);
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
@@ -47,6 +71,13 @@ public class InventarioCentral implements InventarioGeant {
         }
     }
 
+    /**
+     * Agrega Stock de un producto a una sucursal del inventario
+     *
+     * @param claveProd
+     * @param claveSuc
+     * @param cantidad
+     */
     public boolean agregarStockSucursal(Comparable claveProd, Comparable claveSuc, int cantidad) {
         TElementoAB<IProducto> producto = this.catalogo.buscar(claveProd);
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
@@ -58,6 +89,27 @@ public class InventarioCentral implements InventarioGeant {
         }
     }
 
+    /**
+     * Busca una sucursal en el inventario
+     *
+     * @param etiqueta
+     * @returns almacen o null
+     */
+    public IAlmacen buscarSucursal(Comparable etiqueta) {
+        TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(etiqueta);
+        if (sucursal != null) {
+            return sucursal.getDatos();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Busca un producto en el catalogo del inventario
+     *
+     * @param etiqueta
+     * @return producto o null
+     */
     public IProducto buscarProducto(Comparable etiqueta) {
         TElementoAB<IProducto> producto = this.catalogo.buscar(etiqueta);
         if (producto != null) {
@@ -67,6 +119,12 @@ public class InventarioCentral implements InventarioGeant {
         }
     }
 
+    /**
+     * Busca un producto en una sucursal especificada
+     *
+     * @param etiqueta
+     * @return producto o null
+     */
     public IProducto buscarProductoSucursal(Comparable claveProd, Comparable claveSuc) {
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
         TElementoAB<IProducto> producto = this.catalogo.buscar(claveProd);
@@ -106,6 +164,14 @@ public class InventarioCentral implements InventarioGeant {
         }
     }
 
+    /**
+     * Articula la venta de un producto en una sucursal delegando acciones
+     *
+     * @param claveProd
+     * @param claveSuc
+     * @param cantidad
+     * @return valor booleano
+     */
     public boolean ventaSucursal(Comparable claveProd, Comparable claveSuc, int cantidad) {
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
         TElementoAB<IProducto> prodInv = this.catalogo.buscar(claveProd);
@@ -122,6 +188,12 @@ public class InventarioCentral implements InventarioGeant {
         }
     }
 
+    /**
+     * Elimina el producto de toda la cadena de supermercados
+     *
+     * @param claveProd
+     * @return valor booleano
+     */
     public boolean eliminarProducto(Comparable claveProd) {
         Lista<IAlmacen> lista = almacenes.inorden();
         Nodo<IAlmacen> nodoActual = lista.getPrimero();
@@ -139,6 +211,13 @@ public class InventarioCentral implements InventarioGeant {
         }
     }
 
+    /**
+     * Elimina producto de una sucursal
+     *
+     * @param producto
+     * @param claveSuc
+     * @return valor booleano
+     */
     public boolean eliminarProductoSucursal(Comparable producto, Comparable claveSuc) {
         TElementoAB<IAlmacen> sucursal = this.almacenes.buscar(claveSuc);
         TElementoAB<IProducto> prod = this.catalogo.buscar(producto);
@@ -149,22 +228,40 @@ public class InventarioCentral implements InventarioGeant {
         }
     }
 
+    /**
+     * Evalua existencia del producto en el catalogo del inventario
+     *
+     * @param producto
+     * @return valor booleano
+     */
     public boolean existeProducto(Comparable producto) {
         return this.catalogo.buscar(producto) != null;
     }
 
+    /**
+     * Evalua existencia de sucursal en el inventario
+     *
+     * @param sucursal
+     * @return valor booleano
+     */
     public boolean existeSucursal(Comparable sucursal) {
         return this.almacenes.buscar(sucursal) != null;
     }
 
-    public boolean locacionesProducto(Comparable producto) {
-        return this.catalogo.buscar(producto) != null;
-    }
-
+    /**
+     * Obtiene cantidad de productos disponibles en el catalogo
+     *
+     * @return cantidad
+     */
     public int obtenerCantidadCatalogo() {
         return this.catalogo.obtenerTamanio();
     }
 
+    /**
+     * Obtiene cantidad de sucursales en el inventario
+     *
+     * @cantidad
+     */
     public int obtenerCantidadSucursales() {
         return this.almacenes.obtenerTamanio();
     }
@@ -202,6 +299,11 @@ public class InventarioCentral implements InventarioGeant {
         return listaProd;
     }
 
+    /**
+     * Devuelve array con los productos ordenados por ciudad barrrio nombre y stock
+     *
+     * @return array de strings
+     */
     public String[] listarProductosPorCiudadBarrioNombre() {
         Lista<Lista<IProducto>> listaProd = ordenarProductosPorCiudadBarrioNombre();
         if (listaProd == null) {
@@ -233,6 +335,11 @@ public class InventarioCentral implements InventarioGeant {
         return listado;
     }
 
+    /**
+     * Obtiene todos los productos del catálogo ordenados por nombre y con stock
+     *
+     * @return array de strings
+     */
     public String[] listarProductosOrdenadosPorNombre() {
         Nodo<IProducto> nodoActual = this.catalogo.inorden().getPrimero();
         TArbolBB<IProducto> arbol = new TArbolBB<IProducto>();

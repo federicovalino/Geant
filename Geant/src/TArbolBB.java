@@ -47,10 +47,10 @@ public class TArbolBB<T> implements IArbolBB<T> {
    * @return String conteniendo el preorden separado por guiones.
    */
     public String preOrden() {
-      if (this.raiz != null) {
-        return raiz.preOrden();
-      }
-      return "";
+        if (this.raiz != null) {
+            return raiz.preOrden();
+        }
+        return "";
     }
 
     /**
@@ -59,10 +59,10 @@ public class TArbolBB<T> implements IArbolBB<T> {
      * @return String conteniendo el preorden separado por guiones.
      */
     public String postOrden() {
-      if (this.raiz != null) {
-        return raiz.postOrden();
-      }
-      return "";
+        if (this.raiz != null) {
+            return raiz.postOrden();
+        }
+        return "";
     }
 
     /**

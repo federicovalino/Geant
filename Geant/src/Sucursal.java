@@ -95,6 +95,12 @@ public class Sucursal implements IAlmacen {
         }
     }
 
+    /**
+     * Inserta productos en la sucursal
+     *
+     * @param unProducto
+     * @return valor booleano
+     */
     public boolean insertarProducto(IProducto unProducto) {
         TElementoAB<IProducto> nodoNuevo = new TElementoAB<IProducto>
                 (unProducto.getEtiqueta(),unProducto);
@@ -115,6 +121,13 @@ public class Sucursal implements IAlmacen {
         return this.productos.inOrden();
     }
 
+    /**
+     * Añade stock del producto solicitado
+     *
+     * @param clav
+     * @param cantidad
+     * @return cantidad
+     */
     public boolean agregarStock(Comparable clave, Integer cantidad) {
         TElementoAB<IProducto> producto = this.productos.buscar(clave);
         if (producto!=null) {
@@ -128,6 +141,12 @@ public class Sucursal implements IAlmacen {
         }
     }
 
+    /**
+     * Genera una venta del producto pedido
+     *
+     * @param clave
+     * @param cantidad
+     */
     public boolean venta(Comparable clave, Integer cantidad) {
         int restarStock = restarStock(clave, cantidad);
         if (restarStock == -1) {
@@ -158,6 +177,9 @@ public class Sucursal implements IAlmacen {
         }
     }
 
+    /**
+     * Busca por código un producto
+     */
     public IProducto buscarPorCodigo(Comparable clave) {
         TElementoAB<IProducto> producto = this.productos.buscar(clave);
         if (producto!=null) {
@@ -167,10 +189,16 @@ public class Sucursal implements IAlmacen {
         }
     }
 
+
     public boolean existeEnAlmacen (Comparable clave) {
         return this.productos.buscar(clave) != null;
     }
 
+    /**
+     * Ordena toda la lista nombre y stock
+     *
+     * @return array de string
+     */
     public String[] listarOrdenadoPorNombre() {
         Lista<IProducto> listaOrdenada = this.productos.inorden();
         if (listaOrdenada==null) {
@@ -185,7 +213,13 @@ public class Sucursal implements IAlmacen {
         }
         return arrayOrdenado;
     }
-    
+
+    /**
+     * Elimina el producto de la sucursal
+     *
+     * @param clave
+     * @return valor booleano
+     */
     public boolean eliminarProducto(Comparable clave) {
         this.productos.eliminar(clave);
         return this.buscarPorCodigo(clave) == null;
