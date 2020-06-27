@@ -13,7 +13,7 @@ public interface IArbolBB<T> {
 
     public boolean insertar(TElementoAB<T> unElemento);
 
- 
+
 
     /**
      * Busca un elemento dentro del �rbol.
@@ -25,47 +25,77 @@ public interface IArbolBB<T> {
      */
     public TElementoAB<T> buscar(Comparable unaEtiqueta);
 
-   
+
     /**
      * Imprime en InOrden los elementos del �rbol, separados por guiones.
      *
      * @return String conteniendo el preorden separado por guiones.
      */
     public String inOrden();
-    
+
+    /**
+     * Imprime en preOrden los elementos del �rbol, separados por guiones.
+     *
+     * @return String conteniendo el preorden separado por guiones.
+     */
+    public String preOrden();
+
+    /**
+     * Imprime en postOrden los elementos del �rbol, separados por guiones.
+     *
+     * @return String conteniendo el preorden separado por guiones.
+     */
+    public String postOrden();
+
     /**
      *
-     * 
+     *
      * @return una Lista con los elementos del recorrido.
-     * 
+     *
      */
     public Lista<T> inorden( );
+
+    /**
+     *
+     *
+     * @return una Lista con los elementos del recorrido.
+     *
+     */
+    public Lista<T> preorden( );
+
+    /**
+     *
+     *
+     * @return una Lista con los elementos del recorrido.
+     *
+     */
+    public Lista<T> postorden( );
 
    /**
 	 * Retorna la altura del arbol.
 	 * @return Altura del arbol.
 	 */
 	public int obtenerAltura();
-	
+
 	/**
 	 * Retorna el tama�o del arbol.
 	 * @return Tama�o del arbol.
 	 */
 	public int obtenerTamanio();
-	
+
 	/**
 	 * Retorna el nivel del arbol a partir de la etiqueta indicada
 	 * @param unaEtiqueta
 	 * @return Nivel
 	 */
 	public int obtenerNivel(Comparable unaEtiqueta);
-	
+
 	/**
 	 * Retorna la cantidad de hojas del arbol.
 	 * @return Cantidad de hojas del arbol.
 	 */
 	public int obtenerCantidadHojas();
-	
-	
+
+
 }
 

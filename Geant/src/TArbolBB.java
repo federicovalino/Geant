@@ -81,7 +81,7 @@ public class TArbolBB<T> implements IArbolBB<T> {
     public Lista<T> inorden() {
         Lista<T> listaInOrden = new Lista<T>();
         if (!esVacio()) {
-            raiz.inOrden(listaInOrden);
+            raiz.inorden(listaInOrden);
         }
         Lista<T> listaAuxiliar = new Lista<T>();
         Nodo<T> nodoActual = listaInOrden.getPrimero();
@@ -91,6 +91,24 @@ public class TArbolBB<T> implements IArbolBB<T> {
             nodoActual = nodoActual.getSiguiente();
         }
         return listaAuxiliar;
+    }
+
+    public  Lista<T> preorden() {
+         Lista<T> listaPreOrden = new Lista<T>();
+        if (!esVacio()) {
+
+            raiz.preorden(listaPreOrden);
+        }
+        return listaPreOrden;
+    }
+
+    public  Lista<T> postorden() {
+        Lista<T> listaPostOrden = new Lista<>();
+        if (!esVacio()) {
+
+            raiz.postorden(listaPostOrden);
+        }
+        return listaPostOrden;
     }
 
     /**
@@ -128,10 +146,6 @@ public class TArbolBB<T> implements IArbolBB<T> {
         return cantidad;
     }
 
-    public void cargarNivelesNodos() {
-        this.raiz.cargarNivel(0);
-    }
-
     @Override
     public int obtenerNivel(Comparable unaEtiqueta) {
         if (this.raiz == null) {
@@ -157,4 +171,38 @@ public class TArbolBB<T> implements IArbolBB<T> {
             this.raiz = this.raiz.eliminar(unaEtiqueta);
         }
     }
+
+    public long calcularCosto(int[] FrecExito, int[] FrecNoExito) {
+        if(this.raiz != null){
+            int[] indiceFE = {0};
+            int[] indiceFNE = {0};
+            return this.raiz.calcularCosto(FrecExito, FrecNoExito, indiceFE, indiceFNE, 1);
+        } else {
+            return 0;
+        }
+    }
+
+    public void cuentaFrec(Comparable unaClave) {
+        if (this.raiz != null){
+            this.raiz.cuentaFrec(unaClave);
+        }
+    }
+
+    public void completaVectores(Comparable[] claves, int[] FrecExito, int[] FrecNoExito) {
+        if(this.raiz != null){
+            int [] indiceFE = {0};
+            int [] indiceFNE = {0};
+            this.raiz.completaVectores(claves, FrecExito, FrecNoExito, indiceFE, indiceFNE);
+
+        }
+    }
+
+    public boolean cumpleAVL() {
+        boolean[] cumple = {true};
+        if (this.raiz != null) {
+            raiz.cumpleAVL(cumple);
+        }
+        return cumple[0];
+    }
+
 }

@@ -4,7 +4,9 @@ public class TElementoAB<T> implements IElementoAB<T> {
     private TElementoAB<T> hijoIzq;
     private TElementoAB<T> hijoDer;
     private T datos;
-    private int nivel;
+    private int frecExito;
+    private int frecNoExitoIzq;
+    private int frecNoExitoDer;
 
     /**
      * @param unaEtiqueta
@@ -14,7 +16,19 @@ public class TElementoAB<T> implements IElementoAB<T> {
     public TElementoAB(Comparable unaEtiqueta, T unosDatos) {
         etiqueta = unaEtiqueta;
         datos = unosDatos;
-        nivel = 0;
+        this.frecExito = 0;
+        this.frecNoExitoIzq = 0;
+        this.frecNoExitoDer = 0;
+    }
+
+    @Override
+    public Comparable getEtiqueta() {
+        return etiqueta;
+    }
+
+    @Override
+    public T getDatos() {
+        return datos;
     }
 
     public TElementoAB<T> getHijoIzq() {
@@ -23,6 +37,29 @@ public class TElementoAB<T> implements IElementoAB<T> {
 
     public TElementoAB<T> getHijoDer() {
         return hijoDer;
+    }
+
+    @Override
+    public void setHijoIzq(TElementoAB<T> elemento) {
+        this.hijoIzq = elemento;
+
+    }
+
+    @Override
+    public void setHijoDer(TElementoAB<T> elemento) {
+        this.hijoDer = elemento;
+    }
+
+    public int getfrecExito() {
+        return this.frecExito;
+    }
+
+    public int getfrecNoExitoDer() {
+        return this.frecNoExitoDer;
+    }
+
+    public int getfrecNoExitoIzq() {
+        return this.frecNoExitoIzq;
     }
 
     /**
@@ -72,6 +109,48 @@ public class TElementoAB<T> implements IElementoAB<T> {
         } else {
             return null;
         }
+    }
+
+    public TElementoAB eliminar(Comparable unaEtiqueta){
+
+        if(unaEtiqueta.compareTo(this.etiqueta) < 0){
+            if(this.hijoIzq != null){
+                this.hijoIzq = this.hijoIzq.eliminar(unaEtiqueta);
+            }
+            return this;
+        }
+
+        if(unaEtiqueta.compareTo(this.etiqueta) > 0){
+            if(this.hijoDer != null){
+                this.hijoDer = this.hijoDer.eliminar(unaEtiqueta);
+            }
+            return this;
+        }
+        return this.quitaElNodo();
+    }
+
+    public TElementoAB<T> quitaElNodo(){
+        if(this.hijoIzq == null){
+            return this.hijoDer;
+        }
+        if(this.hijoDer == null){
+            return this.hijoIzq;
+        }
+
+        TElementoAB<T> elHijo = this.hijoIzq;
+        TElementoAB<T> elPadre = this;
+        while(elHijo.hijoDer != null){
+            elPadre = elHijo;
+            elHijo = elHijo.hijoDer;
+        }
+
+        if(elPadre != this){
+            elPadre.hijoDer = elHijo.hijoIzq;
+            elHijo.hijoIzq = this.hijoIzq;
+        }
+
+        elHijo.hijoDer = this.hijoDer;
+        return elHijo;
     }
 
         /**
@@ -124,21 +203,37 @@ public class TElementoAB<T> implements IElementoAB<T> {
         return temp;
     }
 
-    public void inOrden(Lista<T> unaLista) {
+    public void inorden(Lista<T> unaLista) {
         Nodo<T> nodoLista = null;
         if (hijoIzq != null) {
-            this.hijoIzq.inOrden(unaLista);
+            this.hijoIzq.inorden(unaLista);
         }
         nodoLista = new Nodo<T>(this.getEtiqueta(),this.getDatos());
         unaLista.insertarPrimero(nodoLista);
         if (hijoDer != null) {
-            this.hijoDer.inOrden(unaLista);
+            this.hijoDer.inorden(unaLista);
         }
     }
 
-    @Override
-    public Comparable getEtiqueta() {
-        return etiqueta;
+    public void preorden(Lista<T> unaLista) {
+        unaLista.insertar(new Nodo<T>(this.etiqueta,this.getDatos()));
+        if (hijoIzq != null) {
+            hijoIzq.preorden(unaLista);
+        }
+        if (hijoDer != null) {
+            hijoDer.preorden(unaLista);
+        }
+    }
+
+    public void postorden(Lista<T> unaLista) {
+        if (hijoIzq != null) {
+            hijoIzq.postorden(unaLista);
+        }
+
+        if (hijoDer != null) {
+            hijoDer.postorden(unaLista);
+        }
+        unaLista.insertar(new Nodo<T>(this.etiqueta,this.getDatos()));
     }
 
     /**
@@ -146,57 +241,6 @@ public class TElementoAB<T> implements IElementoAB<T> {
      */
     public String imprimir() {
         return (etiqueta.toString());
-    }
-
-    @Override
-    public T getDatos() {
-        return datos;
-    }
-
-    @Override
-    public void setHijoIzq(TElementoAB<T> elemento) {
-        this.hijoIzq = elemento;
-
-    }
-
-    @Override
-    public void setHijoDer(TElementoAB<T> elemento) {
-        this.hijoDer = elemento;
-    }
-
-
-
-    @Override
-    public int obtenerAltura() {
-        int alturaIzquierdo = 0;
-        int alturaDerecho = 0;
-        if (this.hijoIzq == null && this.hijoDer == null) {
-            return 0;
-        }
-        if (this.hijoIzq != null) {
-            alturaIzquierdo = this.hijoIzq.obtenerAltura();
-        }
-        if (this.hijoDer != null) {
-            alturaDerecho = this.hijoDer.obtenerAltura();
-        }
-        return 1 + (alturaIzquierdo > alturaDerecho ? alturaIzquierdo : alturaDerecho);
-    }
-
-
-    public int obtenerTamanio() {
-        int contador1 = 0;
-        int contador2 = 0;
-        int contadorFinal = 0;
-        if (this == null) {
-            return 0;
-        }
-        if (this.hijoIzq != null) {
-            contador1 = this.hijoIzq.obtenerTamanio();
-        }
-        if (this.getHijoDer() != null) {
-            contador2 = this.hijoDer.obtenerTamanio();
-        }
-        return contadorFinal = contador1 + contador2 + 1;
     }
 
     public int obtenerNivel(Comparable unaEtiqueta) {
@@ -216,16 +260,36 @@ public class TElementoAB<T> implements IElementoAB<T> {
         return -1;
     }
 
-    public void cargarNivel(int nivel) {
-        this.nivel = nivel;
-        if (this.hijoDer != null && this.hijoIzq != null) {
-            this.hijoIzq.cargarNivel(nivel+1);
-            this.hijoDer.cargarNivel(nivel+1);
-        } else if (this.hijoIzq != null && this.hijoDer == null) {
-            this.hijoIzq.cargarNivel(nivel+1);
-        } else if (this.hijoIzq == null && this.hijoDer != null){
-            this.hijoDer.cargarNivel(nivel+1);
+    @Override
+    public int obtenerAltura() {
+        int alturaIzquierdo = 0;
+        int alturaDerecho = 0;
+        if (this.hijoIzq == null && this.hijoDer == null) {
+            return 0;
         }
+        if (this.hijoIzq != null) {
+            alturaIzquierdo = this.hijoIzq.obtenerAltura();
+        }
+        if (this.hijoDer != null) {
+            alturaDerecho = this.hijoDer.obtenerAltura();
+        }
+        return 1 + (alturaIzquierdo > alturaDerecho ? alturaIzquierdo : alturaDerecho);
+    }
+
+    public int obtenerTamanio() {
+        int contador1 = 0;
+        int contador2 = 0;
+        int contadorFinal = 0;
+        if (this == null) {
+            return 0;
+        }
+        if (this.hijoIzq != null) {
+            contador1 = this.hijoIzq.obtenerTamanio();
+        }
+        if (this.getHijoDer() != null) {
+            contador2 = this.hijoDer.obtenerTamanio();
+        }
+        return contadorFinal = contador1 + contador2 + 1;
     }
 
     public int obtenerCantidadHojas() {
@@ -243,46 +307,89 @@ public class TElementoAB<T> implements IElementoAB<T> {
         return hojasIzquierdo + hojasDerecho;
     }
 
-    public TElementoAB eliminar(Comparable unaEtiqueta){
-
-        if(unaEtiqueta.compareTo(this.etiqueta) < 0){
-            if(this.hijoIzq != null){
-                this.hijoIzq = this.hijoIzq.eliminar(unaEtiqueta);
-            }
-            return this;
+    public void cuentaFrec(Comparable unaClave) {
+        if (this.etiqueta.compareTo(unaClave)==0){
+            this.frecExito++;
+            return;
         }
-
-        if(unaEtiqueta.compareTo(this.etiqueta) > 0){
-            if(this.hijoDer != null){
-                this.hijoDer = this.hijoDer.eliminar(unaEtiqueta);
+        if (unaClave.compareTo(this.etiqueta)<0){
+            if (this.hijoIzq != null){
+                this.hijoIzq.cuentaFrec(unaClave);
+            } else {
+                this.frecNoExitoIzq++;
+                return;
             }
-            return this;
+        } else {
+            if (this.hijoDer != null){
+                this.hijoDer.cuentaFrec(unaClave);
+            } else {
+                this.frecNoExitoDer++;
+                return;
+            }
         }
-        return this.quitaElNodo();
     }
 
-    public TElementoAB quitaElNodo(){
+    public int calcularCosto(int[] FrecExito, int[] FrecNoExito, int[] indiceFE, int[] indiceFNE, int nivel) {
+
+        int suma = 0;
+
+        if (hijoIzq != null) {
+            suma += hijoIzq.calcularCosto(FrecExito, FrecNoExito, indiceFE, indiceFNE, nivel + 1);
+        } else {
+            suma += FrecNoExito[indiceFNE[0]] * (nivel + 1);
+            indiceFNE[0]++;
+        }
+
+        suma += FrecExito[indiceFE[0]] * nivel;
+        indiceFE[0]++;
+
+        if (hijoDer != null) {
+             suma += hijoDer.calcularCosto(FrecExito, FrecNoExito, indiceFE, indiceFNE, nivel + 1);
+        } else {
+            suma += FrecNoExito[indiceFNE[0]] * (nivel + 1);
+            indiceFNE[0]++;
+        }
+        return suma;
+    }
+
+    public void completaVectores(Comparable[] claves, int[] FrecExito, int[] FrecNoExito, int[] indiceFE, int[] indiceFNE) {
+        if (this.hijoIzq != null){
+            this.hijoIzq.completaVectores(claves, FrecExito, FrecNoExito, indiceFE, indiceFNE);
+        }
+        FrecExito[indiceFE[0]]= this.getfrecExito();
+        claves[indiceFE[0]]= this.getEtiqueta();
+        indiceFE[0]++;
+
         if(this.hijoIzq == null){
-            return this.hijoDer;
+            FrecNoExito[indiceFNE[0]]= this.getfrecNoExitoIzq();
+            indiceFNE[0]++;
         }
         if(this.hijoDer == null){
-            return this.hijoIzq;
+            FrecNoExito[indiceFNE[0]]= this.getfrecNoExitoDer();
+            indiceFNE[0]++;
         }
-
-        TElementoAB elHijo = this.hijoIzq;
-        TElementoAB elPadre = this;
-        while(elHijo.hijoDer != null){
-            elPadre = elHijo;
-            elHijo = elHijo.hijoDer;
+        if (this.hijoDer != null){
+            this.hijoDer.completaVectores(claves, FrecExito, FrecNoExito, indiceFE, indiceFNE);
         }
+    }
 
-        if(elPadre != this){
-            elPadre.hijoDer = elHijo.hijoIzq;
-            elHijo.hijoIzq = this.hijoIzq;
+    public int cumpleAVL(boolean[] cumple) {
+        if (cumple[0]==false) {
+            return -1;
         }
-
-        elHijo.hijoDer = this.hijoDer;
-        return elHijo;
+        int altIzq = 0;
+        int altDer = 0;
+        if (getHijoIzq() != null) {
+            altIzq = this.getHijoIzq().cumpleAVL(cumple);
+        }
+        if (getHijoDer() != null) {
+            altDer = this.getHijoDer().cumpleAVL(cumple);
+        }
+        int diferencia = Math.abs(altIzq - altDer);
+        if (diferencia > 1) {
+            cumple[0] = false;
+        }
+        return Math.max(altIzq, altDer) + 1;
     }
 
 }
